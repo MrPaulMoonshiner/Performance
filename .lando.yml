@@ -1,0 +1,30 @@
+name: performance
+recipe: drupal9
+
+config:
+  webroot: docroot/web
+  xdebug: true
+  php: 7.3
+
+tooling:
+  drush:
+    service: appserver
+    cmd: php /app/docroot/vendor/drush/drush/drush --root=/app/docroot
+
+env_file:
+  - .env
+
+events:
+  pre-start:
+    - appserver: composer install
+
+proxy:
+  mailhog:
+    - mail.performance.lndo.site
+
+services:
+  mailhog:
+    type: mailhog
+    hogfrom:
+      - appserver
+    portforward: true
